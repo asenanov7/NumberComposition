@@ -1,4 +1,4 @@
-package com.example.numberomposition.presentation
+package com.example.numberomposition.presentation.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

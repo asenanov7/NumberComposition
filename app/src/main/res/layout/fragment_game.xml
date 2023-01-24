@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textViewSum"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:background="@drawable/shape_oval"
+        android:gravity="center_vertical||center_horizontal"
+        android:textColor="@color/white"
+        android:textSize="64sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.232"
+        tools:text="33" />
+
+    <TextView
+        android:id="@+id/textViewVisibleNumber"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:background="@android:color/holo_blue_light"
+        android:gravity="center_horizontal||center_vertical"
+        tools:text="10"
+        android:textColor="@color/black"
+        android:textSize="34sp"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewInvisibleNumber"
+        app:layout_constraintEnd_toStartOf="@+id/textViewInvisibleNumber"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src=""
+        app:layout_constraintBottom_toBottomOf="@+id/textViewInvisibleNumber"
+        app:layout_constraintEnd_toStartOf="@+id/textViewInvisibleNumber"
+        app:layout_constraintStart_toEndOf="@+id/textViewVisibleNumber"
+        app:layout_constraintTop_toTopOf="@+id/textViewVisibleNumber"
+        app:srcCompat="@android:drawable/ic_input_add"
+        android:contentDescription="@string/plus" />
+
+    <TextView
+        android:id="@+id/textViewInvisibleNumber"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="84dp"
+        android:background="@android:color/holo_blue_light"
+        android:gravity="center_horizontal||center_vertical"
+        android:text="?"
+        android:textColor="@color/black"
+        android:textSize="34sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewSum" />
+
+    <TextView
+        android:id="@+id/textViewPercentOfRightAnswers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/s_s"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewSum"
+        app:layout_constraintVertical_bias="0.407" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/grid"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewPercentOfRightAnswers" />
+
+
+    <GridLayout
+        android:id="@+id/grid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:columnCount="3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/progressBar"
+
+        >
+
+        <TextView
+            android:id="@+id/textViewOption1"
+            android:layout_width="120dp"
+            android:layout_height="80dp"
+            android:background="@android:color/holo_green_light"
+            android:gravity="center_horizontal||center_vertical"
+            android:textSize="34sp"
+            tools:text="2" />
+
+        <TextView
+            android:id="@+id/textViewOption2"
+            android:layout_width="120dp"
+            android:layout_height="80dp"
+            android:background="@android:color/holo_orange_light"
+            android:gravity="center_horizontal||center_vertical"
+            android:textSize="34sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:text="33" />
+
+        <TextView
+            android:id="@+id/textViewOption3"
+            android:layout_width="120dp"
+            android:layout_height="80dp"
+            android:background="@color/purple_200"
+            android:gravity="center_horizontal||center_vertical"
+            android:textSize="34sp"
+            tools:text="23" />
+
+        <TextView
+            android:id="@+id/textViewOption4"
+            android:layout_width="120dp"
+            android:layout_height="80dp"
+            android:background="@android:color/holo_red_light"
+            android:gravity="center_horizontal||center_vertical"
+            android:textSize="34sp"
+            tools:text="12" />
+
+        <TextView
+            android:id="@+id/textViewOption5"
+            android:layout_width="120dp"
+            android:layout_height="80dp"
+            android:background="@android:color/holo_blue_light"
+            android:gravity="center_horizontal||center_vertical"
+            android:textSize="34sp"
+            tools:text="6" />
+
+
+        <TextView
+            android:id="@+id/textViewOption6"
+            android:layout_width="120dp"
+            android:layout_height="80dp"
+            android:background="@android:color/holo_orange_dark"
+            android:gravity="center_horizontal||center_vertical"
+            android:textSize="34sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="9" />
+
+    </GridLayout>
+
+    <TextView
+        android:id="@+id/textViewTimer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="00:00"
+        android:textSize="34sp"
+        android:textColor="@color/purple_200"
+        app:layout_constraintBottom_toTopOf="@+id/textViewSum"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
