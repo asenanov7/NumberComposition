@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+
+
+    <TextView
+        android:id="@+id/textViewChooseLevel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/chooseLevel"
+        android:layout_margin="24dp"
+        android:textSize="24sp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textAlignment="center"/>
+
+    <TextView
+        android:id="@+id/textViewTestLevel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:layout_marginBottom="8dp"
+        android:textAlignment="center"
+        android:padding="12dp"
+        android:textSize="16sp"
+        android:background="@color/purple_500"
+        android:textStyle="bold"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:textAllCaps="true"
+        android:text="@string/_testLevel" />
+
+    <TextView
+        android:id="@+id/textViewEasyLevel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/holo_green_light"
+        android:textAlignment="center"
+        android:padding="12dp"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginStart="12dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="12dp"
+        android:textAllCaps="true"
+        android:text="@string/easyLevel" />
+
+    <TextView
+        android:id="@+id/textViewNormalLevel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:background="@android:color/holo_orange_light"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:padding="12dp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:textAllCaps="true"
+        android:text="@string/normalLevel" />
+
+    <TextView
+        android:id="@+id/textViewHardLevel"
+        android:layout_width="match_parent"
+        android:textColor="@color/white"
+        android:layout_height="wrap_content"
+        android:background="@android:color/holo_red_light"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        android:padding="12dp"
+        android:textSize="16sp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:textAllCaps="true"
+        android:text="@string/hardLevel" />
+</LinearLayout>

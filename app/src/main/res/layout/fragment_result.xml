@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/imageViewSmile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="60dp"
+        android:contentDescription="@string/smile"
+        tools:srcCompat="@drawable/icons8_sad_but_relieved_face_96" />
+
+    <TextView
+        android:id="@+id/textViewCountOfNeededRightAnswers"
+        android:layout_width="wrap_content"
+        android:textColor="@color/black"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:text="@string/neededPoints" />
+
+    <TextView
+        android:id="@+id/textViewYourPoints"
+        android:padding="12dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/purple_500"
+        android:text="@string/yourPoints" />
+
+    <TextView
+        android:id="@+id/textViewNeededPercent"
+        android:layout_width="wrap_content"
+        android:padding="12dp"
+        android:textColor="@color/black"
+        android:layout_height="wrap_content"
+        android:text="@string/NeededPercentOfRightAnswers" />
+
+    <TextView
+        android:id="@+id/textViewYourPercent"
+        android:padding="12dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/purple_500"
+        android:text="@string/yourPercentOfRightAnswers" />
+
+    <Button
+        android:id="@+id/buttonRepeat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="200dp"
+        android:text="@string/repeat" />
+</androidx.appcompat.widget.LinearLayoutCompat>
