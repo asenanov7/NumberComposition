@@ -35,9 +35,21 @@ class ViewModelGameFragment(var level: Level) : ViewModel() {
     val timerLD: LiveData<Int>
         get() = _timerLD
 
-    private var _counterOfRightAnswers = MutableLiveData<Int>()
+    private var _counterOfQuestions = MutableLiveData(0)
+    val counterOfQuestions:LiveData<Int>
+        get() = _counterOfQuestions
+
+    private var _counterOfRightAnswers = MutableLiveData(0)
     val counterOfRightAnswers:LiveData<Int>
         get() = _counterOfRightAnswers
+
+    private var _counterOfPercentRightAnswers = MutableLiveData(0)
+    val counterOfPercentRightAnswers:LiveData<Int>
+        get() = _counterOfPercentRightAnswers
+
+    private var _rightAnswer = MutableLiveData<Int>()
+    val rightAnswer:LiveData<Int>
+        get() = _rightAnswer
 
     private fun getGameSettings(level: Level) {
         _gameSettingsLD.value = getGameSettingsUseCase(level)
@@ -62,18 +74,35 @@ class ViewModelGameFragment(var level: Level) : ViewModel() {
         }
     }
 
-    fun generateQuestion(answer:String) {
+    fun generateQuestion(answer:String= UNDEFINED_ANSWER) {
+        _counterOfQuestions.value = _counterOfQuestions.value?.plus(1)
+        Log.d("lesson", "_counterOfQuestions.value = ${_counterOfQuestions.value}")
+
+
+        if (_rightAnswer.value?.equals(answer.toInt()) == true && answer != UNDEFINED_ANSWER){
+            _counterOfRightAnswers.value = _counterOfRightAnswers.value?.plus(1)
+            Log.d("lesson", "_counterOfRightAnswers.value = ${_counterOfRightAnswers.value} ")
+        }
+
         _questionLD.value = generateQuestionUseCase(
             _gameSettingsLD.value?.maxSumValue?:
-            throw java.lang.RuntimeException("GameFragment 47, viewModelGameFragment.gameSettingsLD.value?.maxSumValue == null"),
+            throw java.lang.RuntimeException("viewModelGameFragment 72, gameSettingsLD.value?.maxSumValue == null"),
             6
         )
+
+        _rightAnswer.value = _questionLD.value?.sum?.minus(_questionLD.value?.visibleNumber?:
+        throw java.lang.RuntimeException("viewModelGameFragment 43, _questionLD.value?.visibleNumber == null"))
+        Log.d("lesson", "_rightAnswer.value = ${_rightAnswer.value}")
     }
 
     init {
         getGameSettings(level)
         launchTimer()
         generateQuestion()
+    }
+
+    companion object{
+        const val UNDEFINED_ANSWER = "0"
     }
 
 
