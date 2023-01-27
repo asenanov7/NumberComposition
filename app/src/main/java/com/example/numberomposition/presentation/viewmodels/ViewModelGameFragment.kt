@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.numberomposition.data.RepositoryImpl
+import com.example.numberomposition.domain.entity.GameResult
 import com.example.numberomposition.domain.entity.GameSettings
 import com.example.numberomposition.domain.entity.Level
 import com.example.numberomposition.domain.entity.Question
@@ -35,10 +36,6 @@ class ViewModelGameFragment(level: Level) : ViewModel() {
     val timerLD: LiveData<Int>
         get() = _timerLD
 
-    private val _rightAnswerLD = MutableLiveData<Int>()
-    val rightAnswerLD:LiveData<Int>
-        get() = _rightAnswerLD
-
     private val _counterOfQuestionsLD = MutableLiveData(0)
     val counterOfQuestionsLD:LiveData<Int>
         get() = _counterOfQuestionsLD
@@ -50,6 +47,22 @@ class ViewModelGameFragment(level: Level) : ViewModel() {
     private val _counterOfPercentRightAnswersLD = MutableLiveData(0)
     val counterOfPercentRightAnswersLD:LiveData<Int>
         get() = _counterOfPercentRightAnswersLD
+
+    fun answer(answer:String){
+        //Получение праивльного ответа
+        val rightAnswer = _questionLD.value?.rightAnswer
+
+        //Проверка на правильность ответа от пользователя,
+        //если ответ верен, изменить значение количества правильных ответов
+        checkAnswerAndRecalculateCounterOfAnswers(rightAnswer!!, answer.toInt())
+
+        //Пересчет процентов правильных ответов, в зависимости от количества вопросов и правильных ответов
+        recalculatePercentageOfCorrectAnswers()
+
+        //Создание нового вопроса, увелечение количества вопросов в ЛД на 1,
+        // и установка нового вопроса в ЛД с актульным вопросомвопросом
+        generateQuestion()
+    }
 
     private fun getGameSettings(level: Level) {
         _gameSettingsLD.value = getGameSettingsUseCase(level)
@@ -88,23 +101,10 @@ class ViewModelGameFragment(level: Level) : ViewModel() {
         _counterOfPercentRightAnswersLD.value = (rightAnswers/questions*100).toString().substringBefore(".").toInt()
     }
 
-    fun answer(answer:String){
-        //Получение праивльного ответа и установка его в ЛайвДату
-        _rightAnswerLD.value = _questionLD.value?.sum?.minus(_questionLD.value?.visibleNumber?:
-        throw java.lang.RuntimeException("viewModelGameFragment, _questionLD.value?.visibleNumber == null"))
-
-        //Проверка на правильность ответа от пользователя,
-        //если ответ верен, изменить значение количества правильных ответов
-        if (_rightAnswerLD.value?.equals(answer.toInt()) == true){
+    private fun checkAnswerAndRecalculateCounterOfAnswers(rightAnswer:Int, userAnswer:Int){
+        if (rightAnswer == userAnswer){
             _counterOfRightAnswersLD.value = _counterOfRightAnswersLD.value?.plus(1)
         }
-
-        //Пересчет процентов правильных ответов, в зависимости от количества вопросов и правильных ответов
-        recalculatePercentageOfCorrectAnswers()
-
-        //Создание нового вопроса, увелечение количества вопросов в ЛД на 1,
-        // и установка нового вопроса в ЛД с актульным вопросомвопросом
-        generateQuestion()
     }
 
     override fun onCleared() {

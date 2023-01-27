@@ -1,5 +1,6 @@
 package com.example.numberomposition.presentation.fragments
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +15,6 @@ import com.example.numberomposition.domain.entity.GameSettings
 import com.example.numberomposition.domain.entity.Level
 import com.example.numberomposition.presentation.viewmodels.ViewModelGameFragment
 import com.example.numberomposition.presentation.viewmodels.ViewModelGameFragmentFactory
-import kotlinx.coroutines.internal.artificialFrame
 import kotlin.properties.Delegates
 
 class GameFragment:Fragment() {
@@ -55,7 +55,11 @@ class GameFragment:Fragment() {
 
         setupOptionsOnClickListener()
         setupObservers()
+    }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun setupObservers(){
@@ -85,13 +89,7 @@ class GameFragment:Fragment() {
                 it, minRightAnswers)   //%s,%s
             binding.textViewCounterOfRightAnswers.text = textCounterOfRight
 
-            if (it>=minRightAnswers){
-                binding.textViewCounterOfRightAnswers.setTextColor(
-                    ContextCompat.getColor(requireContext(), android.R.color.holo_green_light))
-            }else{
-                binding.textViewCounterOfRightAnswers.setTextColor(
-                    ContextCompat.getColor(requireContext(), android.R.color.holo_red_light))
-            }
+            checkEnoughOfRightAnswers()
         }
 
         viewModelGameFragment.counterOfPercentRightAnswersLD.observe(viewLifecycleOwner){
@@ -100,16 +98,10 @@ class GameFragment:Fragment() {
             val textCounterOfRightPercent = String.format(resources.getString(R.string.rightAnswersPercent),
                 it, minPercentRightAnswers) //%s,%s
             binding.textViewPercentOfRightAnswers.text=textCounterOfRightPercent
-            if (it>=minPercentRightAnswers){
-                binding.textViewPercentOfRightAnswers.setTextColor(
-                    ContextCompat.getColor(requireContext(), android.R.color.holo_green_light))
-            }else{
-                binding.textViewPercentOfRightAnswers.setTextColor(
-                    ContextCompat.getColor(requireContext(), android.R.color.holo_red_light))
-            }
 
-            val progressPercent = it / (100.toDouble().div(100))
-            binding.progressBar.progress = progressPercent.toInt()
+            checkEnoughOfPercentRightAnswers()
+
+            binding.progressBar.setProgress(it, true)
             binding.progressBar.secondaryProgress = minPercentRightAnswers
         }
 
@@ -121,9 +113,28 @@ class GameFragment:Fragment() {
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun checkEnoughOfPercentRightAnswers(){
+        val colorGreen = ContextCompat.getColor(requireContext(), android.R.color.holo_green_light)
+        val colorRed =  ContextCompat.getColor(requireContext(), android.R.color.holo_red_light)
+
+        if (counterPercentRightAnswers>=minPercentRightAnswers){
+            binding.textViewPercentOfRightAnswers.setTextColor(colorGreen)
+            binding.progressBar.progressTintList = ColorStateList.valueOf(colorGreen)
+        }else{
+            binding.textViewPercentOfRightAnswers.setTextColor(colorRed)
+            binding.progressBar.progressTintList = ColorStateList.valueOf(colorRed)
+        }
+    }
+
+    private fun checkEnoughOfRightAnswers(){
+        val colorGreen = ContextCompat.getColor(requireContext(), android.R.color.holo_green_light)
+        val colorRed =  ContextCompat.getColor(requireContext(), android.R.color.holo_red_light)
+
+        if (counterRightAnswers>=minRightAnswers){
+            binding.textViewCounterOfRightAnswers.setTextColor(colorGreen)
+        }else{
+            binding.textViewCounterOfRightAnswers.setTextColor(colorRed)
+        }
     }
 
     private fun setupOptionsOnClickListener(){
