@@ -12,7 +12,8 @@
     <string name="easyLevel">Легкий</string>
     <string name="normalLevel">Нормальный</string>
     <string name="hardLevel">Тяжелый</string>
-    <string name="s_s">Правильных ответов %s (минумум %s)</string>
+    <string name="rightAnswers">Правильных ответов %s (минумум %s)</string>
+    <string name="rightAnswersPercent">Процент правильности %s (минимум %s)</string>
     <string name="plus">plus</string>
     <string name="repeat">Попробовать снова</string>
     <string name="yourPercentOfRightAnswers">Ваш процент правильных ответов: %s</string>
