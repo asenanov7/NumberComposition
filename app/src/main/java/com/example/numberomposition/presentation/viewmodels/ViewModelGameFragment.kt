@@ -1,5 +1,6 @@
 package com.example.numberomposition.presentation.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -18,35 +19,35 @@ class ViewModelGameFragment(level: Level) : ViewModel() {
     private val getGameSettingsUseCase = GetGameSettingsUseCase(repository)
     private val generateQuestionUseCase = GenerateQuestionUseCase(repository)
 
-    private var _questionLD = MutableLiveData<Question>()
+    private val _questionLD = MutableLiveData<Question>()
     val questionLD: LiveData<Question>
         get() = _questionLD
 
-    private var _gameSettingsLD = MutableLiveData<GameSettings>()
+    private val _gameSettingsLD = MutableLiveData<GameSettings>()
     val gameSettingsLD: LiveData<GameSettings>
         get() = _gameSettingsLD
 
-    private var _screenShouldBeFinishedLD = MutableLiveData<Boolean>()
+    private val _screenShouldBeFinishedLD = MutableLiveData<Boolean>()
     val screenShouldBeFinishedLD: LiveData<Boolean>
         get() = _screenShouldBeFinishedLD
 
-    private var _timerLD = MutableLiveData<Int>()
+    private val _timerLD = MutableLiveData<Int>()
     val timerLD: LiveData<Int>
         get() = _timerLD
 
-    private var _rightAnswerLD = MutableLiveData<Int>()
+    private val _rightAnswerLD = MutableLiveData<Int>()
     val rightAnswerLD:LiveData<Int>
         get() = _rightAnswerLD
 
-    private var _counterOfQuestionsLD = MutableLiveData(0)
+    private val _counterOfQuestionsLD = MutableLiveData(0)
     val counterOfQuestionsLD:LiveData<Int>
         get() = _counterOfQuestionsLD
 
-    private var _counterOfRightAnswersLD = MutableLiveData(0)
+    private val _counterOfRightAnswersLD = MutableLiveData(0)
     val counterOfRightAnswersLD:LiveData<Int>
         get() = _counterOfRightAnswersLD
 
-    private var _counterOfPercentRightAnswersLD = MutableLiveData(0)
+    private val _counterOfPercentRightAnswersLD = MutableLiveData(0)
     val counterOfPercentRightAnswersLD:LiveData<Int>
         get() = _counterOfPercentRightAnswersLD
 
@@ -61,6 +62,7 @@ class ViewModelGameFragment(level: Level) : ViewModel() {
             _timerLD.value = it.gameTimeInSeconds
             thread {
                 while (_timerLD.value != 1) {
+                    Log.d("lesson", "launchTimer:${_timerLD.value} ")
                     Thread.sleep(1000)
                     _timerLD.postValue((_timerLD.value?.toInt()?.minus(1))
                         ?: throw java.lang.RuntimeException("_timerLD.value = ${_timerLD.value}"))
@@ -103,6 +105,11 @@ class ViewModelGameFragment(level: Level) : ViewModel() {
         //Создание нового вопроса, увелечение количества вопросов в ЛД на 1,
         // и установка нового вопроса в ЛД с актульным вопросомвопросом
         generateQuestion()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        _timerLD.value=1
     }
 
     init {

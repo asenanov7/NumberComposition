@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.numberomposition.R
@@ -48,7 +49,7 @@ class GameFragment:Fragment() {
         val viewModelFactory = ViewModelGameFragmentFactory(level)
         viewModelGameFragment = ViewModelProvider(this, viewModelFactory)[ViewModelGameFragment::class.java]
 
-        gameSettings = viewModelGameFragment.gameSettingsLD.value?:throw Exception("gameSettings == null")
+        gameSettings = viewModelGameFragment.gameSettingsLD.value ?:throw Exception("gameSettings == null")
         minPercentRightAnswers = gameSettings.minPercentOfRightAnswers
         minRightAnswers = gameSettings.minCountOfRightAnswers
 
@@ -78,21 +79,34 @@ class GameFragment:Fragment() {
             countOfQuestions=it
         }
 
-        viewModelGameFragment.counterOfPercentRightAnswersLD.observe(viewLifecycleOwner){
-            counterPercentRightAnswers = it
-        }
-
         viewModelGameFragment.counterOfRightAnswersLD.observe(viewLifecycleOwner) {
             counterRightAnswers = it
             val textCounterOfRight = String.format(resources.getString(R.string.rightAnswers),
                 it, minRightAnswers)   //%s,%s
             binding.textViewCounterOfRightAnswers.text = textCounterOfRight
+
+            if (it>=minRightAnswers){
+                binding.textViewCounterOfRightAnswers.setTextColor(
+                    ContextCompat.getColor(requireContext(), android.R.color.holo_green_light))
+            }else{
+                binding.textViewCounterOfRightAnswers.setTextColor(
+                    ContextCompat.getColor(requireContext(), android.R.color.holo_red_light))
+            }
         }
 
         viewModelGameFragment.counterOfPercentRightAnswersLD.observe(viewLifecycleOwner){
+            counterPercentRightAnswers = it
+
             val textCounterOfRightPercent = String.format(resources.getString(R.string.rightAnswersPercent),
                 it, minPercentRightAnswers) //%s,%s
             binding.textViewPercentOfRightAnswers.text=textCounterOfRightPercent
+            if (it>=minPercentRightAnswers){
+                binding.textViewPercentOfRightAnswers.setTextColor(
+                    ContextCompat.getColor(requireContext(), android.R.color.holo_green_light))
+            }else{
+                binding.textViewPercentOfRightAnswers.setTextColor(
+                    ContextCompat.getColor(requireContext(), android.R.color.holo_red_light))
+            }
 
             val progressPercent = it / (100.toDouble().div(100))
             binding.progressBar.progress = progressPercent.toInt()
