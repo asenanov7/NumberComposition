@@ -14,11 +14,19 @@ import com.example.numberomposition.domain.entity.Level
 import com.example.numberomposition.presentation.viewmodels.ViewModelGameFragment
 import com.example.numberomposition.presentation.viewmodels.ViewModelGameFragmentFactory
 import kotlinx.coroutines.internal.artificialFrame
+import kotlin.properties.Delegates
 
 class GameFragment:Fragment() {
 
     private lateinit var level: Level
     private lateinit var viewModelGameFragment: ViewModelGameFragment
+    private lateinit var gameSettings:GameSettings
+
+    private var minRightAnswers by Delegates.notNull<Int>()
+    private var minPercentRightAnswers by Delegates.notNull<Int>()
+    private var counterRightAnswers by Delegates.notNull<Int>()
+    private var counterPercentRightAnswers by Delegates.notNull<Int>()
+    private var countOfQuestions by Delegates.notNull<Int>()
 
     private var _binding: FragmentGameBinding? = null
     private val binding: FragmentGameBinding
@@ -37,20 +45,23 @@ class GameFragment:Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupOptionsOnClickListener()
-
         val viewModelFactory = ViewModelGameFragmentFactory(level)
         viewModelGameFragment = ViewModelProvider(this, viewModelFactory)[ViewModelGameFragment::class.java]
 
+        gameSettings = viewModelGameFragment.gameSettingsLD.value?:throw Exception("gameSettings == null")
+        minPercentRightAnswers = gameSettings.minPercentOfRightAnswers
+        minRightAnswers = gameSettings.minCountOfRightAnswers
 
+        setupOptionsOnClickListener()
+        setupObservers()
+
+    }
+
+    private fun setupObservers(){
         viewModelGameFragment.timerLD.observe(viewLifecycleOwner) {
             binding.textViewTimer.text = it.toString()
         }
-        viewModelGameFragment.screenShouldBeFinishedLD.observe(viewLifecycleOwner) {
-            if (it) {
-                launchResultFragment(GameResult(true,20,202,viewModelGameFragment.gameSettingsLD.value!!))
-            }
-        }
+
         viewModelGameFragment.questionLD.observe(viewLifecycleOwner) {
             binding.textViewSum.text = it.sum.toString()
             binding.textViewVisibleNumber.text = it.visibleNumber.toString()
@@ -62,24 +73,38 @@ class GameFragment:Fragment() {
             binding.textViewOption5.text = it.options[4].toString()
             binding.textViewOption6.text = it.options[5].toString()
         }
+
+        viewModelGameFragment.counterOfQuestionsLD.observe(viewLifecycleOwner){
+            countOfQuestions=it
+        }
+
+        viewModelGameFragment.counterOfPercentRightAnswersLD.observe(viewLifecycleOwner){
+            counterPercentRightAnswers = it
+        }
+
         viewModelGameFragment.counterOfRightAnswersLD.observe(viewLifecycleOwner) {
-            val minRightAnswers = viewModelGameFragment.gameSettingsLD.value?.minCountOfRightAnswers
+            counterRightAnswers = it
             val textCounterOfRight = String.format(resources.getString(R.string.rightAnswers),
                 it, minRightAnswers)   //%s,%s
             binding.textViewCounterOfRightAnswers.text = textCounterOfRight
         }
+
         viewModelGameFragment.counterOfPercentRightAnswersLD.observe(viewLifecycleOwner){
-            val minPercentOfRightAnswers = viewModelGameFragment.gameSettingsLD.value?.minPercentOfRightAnswers
-                ?:throw java.lang.RuntimeException("viewModelGameFragment.gameSettingsLD.value?.minPercentOfRightAnswers==null")
             val textCounterOfRightPercent = String.format(resources.getString(R.string.rightAnswersPercent),
-            it, minPercentOfRightAnswers) //%s,%s
+                it, minPercentRightAnswers) //%s,%s
             binding.textViewPercentOfRightAnswers.text=textCounterOfRightPercent
 
             val progressPercent = it / (100.toDouble().div(100))
             binding.progressBar.progress = progressPercent.toInt()
-            binding.progressBar.secondaryProgress = minPercentOfRightAnswers
+            binding.progressBar.secondaryProgress = minPercentRightAnswers
         }
 
+        viewModelGameFragment.screenShouldBeFinishedLD.observe(viewLifecycleOwner) {
+            if (it) {
+                val winner = counterRightAnswers>=minRightAnswers && counterPercentRightAnswers>=minPercentRightAnswers
+                launchResultFragment(GameResult(winner, counterRightAnswers, countOfQuestions, gameSettings))
+            }
+        }
     }
 
     override fun onDestroyView() {

@@ -31,6 +31,8 @@ class GameResultFragment:Fragment() {
         super.onViewCreated(view, savedInstanceState)
         parseArgs()
 
+        Log.d("lesson", "$gameResult")
+
         binding.buttonRepeat.setOnClickListener {
             retryGame()
         }

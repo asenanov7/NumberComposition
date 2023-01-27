@@ -1,6 +1,5 @@
 package com.example.numberomposition.presentation.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -56,11 +55,8 @@ class ViewModelGameFragment(level: Level) : ViewModel() {
     }
 
     private fun launchTimer() {
-        Log.d("lesson", "launchTimer()")
-
         _screenShouldBeFinishedLD.value = false
 
-        Log.d("lesson", " In Timer _gameSettingsLD.value = ${_gameSettingsLD.value}")
         _gameSettingsLD.value?.let {
             _timerLD.value = it.gameTimeInSeconds
             thread {
@@ -76,7 +72,6 @@ class ViewModelGameFragment(level: Level) : ViewModel() {
 
     private fun generateQuestion() {
         _counterOfQuestionsLD.value = _counterOfQuestionsLD.value?.plus(1)
-        Log.d("lesson", "_counterOfQuestions.value = ${_counterOfQuestionsLD.value}")
 
         _questionLD.value = generateQuestionUseCase(
             _gameSettingsLD.value?.maxSumValue?:
@@ -89,21 +84,17 @@ class ViewModelGameFragment(level: Level) : ViewModel() {
         val rightAnswers = _counterOfRightAnswersLD.value?.toDouble()?:throw Exception("_counterOfRightAnswersLD.value == null")
         val questions = _counterOfQuestionsLD.value?.toDouble()?:throw Exception("_counterOfQuestionsLD.value == null")
         _counterOfPercentRightAnswersLD.value = (rightAnswers/questions*100).toString().substringBefore(".").toInt()
-
-        Log.d("lesson", "_counterOfPercentRightAnswersLD.value: ${_counterOfPercentRightAnswersLD.value}")
     }
 
     fun answer(answer:String){
         //Получение праивльного ответа и установка его в ЛайвДату
         _rightAnswerLD.value = _questionLD.value?.sum?.minus(_questionLD.value?.visibleNumber?:
         throw java.lang.RuntimeException("viewModelGameFragment, _questionLD.value?.visibleNumber == null"))
-        Log.d("lesson", "_rightAnswer.value = ${_rightAnswerLD.value}")
 
         //Проверка на правильность ответа от пользователя,
         //если ответ верен, изменить значение количества правильных ответов
         if (_rightAnswerLD.value?.equals(answer.toInt()) == true){
             _counterOfRightAnswersLD.value = _counterOfRightAnswersLD.value?.plus(1)
-            Log.d("lesson", "_counterOfRightAnswers.value = ${_counterOfRightAnswersLD.value} ")
         }
 
         //Пересчет процентов правильных ответов, в зависимости от количества вопросов и правильных ответов
