@@ -8,8 +8,9 @@
 
     <ImageView
         android:id="@+id/imageViewSmile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:adjustViewBounds="true"
         android:layout_gravity="center"
         android:layout_marginTop="60dp"
         android:layout_marginBottom="60dp"
@@ -38,7 +39,7 @@
         android:padding="12dp"
         android:textColor="@color/black"
         android:layout_height="wrap_content"
-        android:text="@string/NeededPercentOfRightAnswers" />
+        android:text="@string/neededPercentOfRightAnswers" />
 
     <TextView
         android:id="@+id/textViewYourPercent"

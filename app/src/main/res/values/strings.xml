@@ -17,7 +17,7 @@
     <string name="plus">plus</string>
     <string name="repeat">Попробовать снова</string>
     <string name="yourPercentOfRightAnswers">Ваш процент правильных ответов: %s</string>
-    <string name="NeededPercentOfRightAnswers">Необходимый процент правильных ответов %s</string>
+    <string name="neededPercentOfRightAnswers">Необходимый процент правильных ответов %s</string>
     <string name="yourPoints">Ваш счет: %s</string>
     <string name="neededPoints">Необходимое количество правильных ответов %s</string>
     <string name="smile">smile</string>
