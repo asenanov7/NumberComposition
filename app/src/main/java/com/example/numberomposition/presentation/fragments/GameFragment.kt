@@ -13,6 +13,7 @@ import com.example.numberomposition.domain.entity.GameSettings
 import com.example.numberomposition.domain.entity.Level
 import com.example.numberomposition.presentation.viewmodels.ViewModelGameFragment
 import com.example.numberomposition.presentation.viewmodels.ViewModelGameFragmentFactory
+import kotlinx.coroutines.internal.artificialFrame
 
 class GameFragment:Fragment() {
 
@@ -41,12 +42,13 @@ class GameFragment:Fragment() {
         val viewModelFactory = ViewModelGameFragmentFactory(level)
         viewModelGameFragment = ViewModelProvider(this, viewModelFactory)[ViewModelGameFragment::class.java]
 
+
         viewModelGameFragment.timerLD.observe(viewLifecycleOwner) {
             binding.textViewTimer.text = it.toString()
         }
-        viewModelGameFragment.screenShouldBeFinished.observe(viewLifecycleOwner) {
+        viewModelGameFragment.screenShouldBeFinishedLD.observe(viewLifecycleOwner) {
             if (it) {
-                launchResultFragment(GameResult(true, 20, 20, GameSettings(20, 20, 20, 20)))
+                launchResultFragment(GameResult(true,20,202,viewModelGameFragment.gameSettingsLD.value!!))
             }
         }
         viewModelGameFragment.questionLD.observe(viewLifecycleOwner) {
@@ -60,16 +62,24 @@ class GameFragment:Fragment() {
             binding.textViewOption5.text = it.options[4].toString()
             binding.textViewOption6.text = it.options[5].toString()
         }
-        viewModelGameFragment.counterOfRightAnswers.observe(viewLifecycleOwner) {
+        viewModelGameFragment.counterOfRightAnswersLD.observe(viewLifecycleOwner) {
             val minRightAnswers = viewModelGameFragment.gameSettingsLD.value?.minCountOfRightAnswers
-
             val textCounterOfRight = String.format(resources.getString(R.string.rightAnswers),
                 it, minRightAnswers)   //%s,%s
             binding.textViewCounterOfRightAnswers.text = textCounterOfRight
-
-            val progress = it / (minRightAnswers?.toDouble()?.div(100)!!)
-            binding.progressBar.progress = progress.toInt()
         }
+        viewModelGameFragment.counterOfPercentRightAnswersLD.observe(viewLifecycleOwner){
+            val minPercentOfRightAnswers = viewModelGameFragment.gameSettingsLD.value?.minPercentOfRightAnswers
+                ?:throw java.lang.RuntimeException("viewModelGameFragment.gameSettingsLD.value?.minPercentOfRightAnswers==null")
+            val textCounterOfRightPercent = String.format(resources.getString(R.string.rightAnswersPercent),
+            it, minPercentOfRightAnswers) //%s,%s
+            binding.textViewPercentOfRightAnswers.text=textCounterOfRightPercent
+
+            val progressPercent = it / (100.toDouble().div(100))
+            binding.progressBar.progress = progressPercent.toInt()
+            binding.progressBar.secondaryProgress = minPercentOfRightAnswers
+        }
+
     }
 
     override fun onDestroyView() {
@@ -79,12 +89,12 @@ class GameFragment:Fragment() {
 
     private fun setupOptionsOnClickListener(){
         with(binding){
-            textViewOption1.setOnClickListener{viewModelGameFragment.generateQuestion(textViewOption1.text.toString())}
-            textViewOption2.setOnClickListener{viewModelGameFragment.generateQuestion(textViewOption2.text.toString())}
-            textViewOption3.setOnClickListener{viewModelGameFragment.generateQuestion(textViewOption3.text.toString())}
-            textViewOption4.setOnClickListener{viewModelGameFragment.generateQuestion(textViewOption4.text.toString())}
-            textViewOption5.setOnClickListener{viewModelGameFragment.generateQuestion(textViewOption5.text.toString())}
-            textViewOption6.setOnClickListener{viewModelGameFragment.generateQuestion(textViewOption6.text.toString())}
+            textViewOption1.setOnClickListener{viewModelGameFragment.answer(textViewOption1.text.toString())}
+            textViewOption2.setOnClickListener{viewModelGameFragment.answer(textViewOption2.text.toString())}
+            textViewOption3.setOnClickListener{viewModelGameFragment.answer(textViewOption3.text.toString())}
+            textViewOption4.setOnClickListener{viewModelGameFragment.answer(textViewOption4.text.toString())}
+            textViewOption5.setOnClickListener{viewModelGameFragment.answer(textViewOption5.text.toString())}
+            textViewOption6.setOnClickListener{viewModelGameFragment.answer(textViewOption6.text.toString())}
         }
     }
 

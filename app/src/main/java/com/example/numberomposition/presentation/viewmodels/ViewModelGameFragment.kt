@@ -12,7 +12,7 @@ import com.example.numberomposition.domain.usecases.GenerateQuestionUseCase
 import com.example.numberomposition.domain.usecases.GetGameSettingsUseCase
 import kotlin.concurrent.thread
 
-class ViewModelGameFragment(var level: Level) : ViewModel() {
+class ViewModelGameFragment(level: Level) : ViewModel() {
 
     private val repository = RepositoryImpl
 
@@ -27,29 +27,29 @@ class ViewModelGameFragment(var level: Level) : ViewModel() {
     val gameSettingsLD: LiveData<GameSettings>
         get() = _gameSettingsLD
 
-    private var _screenShouldBeFinished = MutableLiveData<Boolean>()
-    val screenShouldBeFinished: LiveData<Boolean>
-        get() = _screenShouldBeFinished
+    private var _screenShouldBeFinishedLD = MutableLiveData<Boolean>()
+    val screenShouldBeFinishedLD: LiveData<Boolean>
+        get() = _screenShouldBeFinishedLD
 
     private var _timerLD = MutableLiveData<Int>()
     val timerLD: LiveData<Int>
         get() = _timerLD
 
-    private var _counterOfQuestions = MutableLiveData(0)
-    val counterOfQuestions:LiveData<Int>
-        get() = _counterOfQuestions
+    private var _rightAnswerLD = MutableLiveData<Int>()
+    val rightAnswerLD:LiveData<Int>
+        get() = _rightAnswerLD
 
-    private var _counterOfRightAnswers = MutableLiveData(0)
-    val counterOfRightAnswers:LiveData<Int>
-        get() = _counterOfRightAnswers
+    private var _counterOfQuestionsLD = MutableLiveData(0)
+    val counterOfQuestionsLD:LiveData<Int>
+        get() = _counterOfQuestionsLD
 
-    private var _counterOfPercentRightAnswers = MutableLiveData(0)
-    val counterOfPercentRightAnswers:LiveData<Int>
-        get() = _counterOfPercentRightAnswers
+    private var _counterOfRightAnswersLD = MutableLiveData(0)
+    val counterOfRightAnswersLD:LiveData<Int>
+        get() = _counterOfRightAnswersLD
 
-    private var _rightAnswer = MutableLiveData<Int>()
-    val rightAnswer:LiveData<Int>
-        get() = _rightAnswer
+    private var _counterOfPercentRightAnswersLD = MutableLiveData(0)
+    val counterOfPercentRightAnswersLD:LiveData<Int>
+        get() = _counterOfPercentRightAnswersLD
 
     private fun getGameSettings(level: Level) {
         _gameSettingsLD.value = getGameSettingsUseCase(level)
@@ -58,7 +58,7 @@ class ViewModelGameFragment(var level: Level) : ViewModel() {
     private fun launchTimer() {
         Log.d("lesson", "launchTimer()")
 
-        _screenShouldBeFinished.value = false
+        _screenShouldBeFinishedLD.value = false
 
         Log.d("lesson", " In Timer _gameSettingsLD.value = ${_gameSettingsLD.value}")
         _gameSettingsLD.value?.let {
@@ -69,30 +69,49 @@ class ViewModelGameFragment(var level: Level) : ViewModel() {
                     _timerLD.postValue((_timerLD.value?.toInt()?.minus(1))
                         ?: throw java.lang.RuntimeException("_timerLD.value = ${_timerLD.value}"))
                 }
-                _screenShouldBeFinished.postValue(true)
+                _screenShouldBeFinishedLD.postValue(true)
             }
         }
     }
 
-    fun generateQuestion(answer:String= UNDEFINED_ANSWER) {
-        _counterOfQuestions.value = _counterOfQuestions.value?.plus(1)
-        Log.d("lesson", "_counterOfQuestions.value = ${_counterOfQuestions.value}")
-
-
-        if (_rightAnswer.value?.equals(answer.toInt()) == true && answer != UNDEFINED_ANSWER){
-            _counterOfRightAnswers.value = _counterOfRightAnswers.value?.plus(1)
-            Log.d("lesson", "_counterOfRightAnswers.value = ${_counterOfRightAnswers.value} ")
-        }
+    private fun generateQuestion() {
+        _counterOfQuestionsLD.value = _counterOfQuestionsLD.value?.plus(1)
+        Log.d("lesson", "_counterOfQuestions.value = ${_counterOfQuestionsLD.value}")
 
         _questionLD.value = generateQuestionUseCase(
             _gameSettingsLD.value?.maxSumValue?:
-            throw java.lang.RuntimeException("viewModelGameFragment 72, gameSettingsLD.value?.maxSumValue == null"),
+            throw java.lang.RuntimeException("viewModelGameFragment, gameSettingsLD.value?.maxSumValue == null"),
             6
         )
+    }
 
-        _rightAnswer.value = _questionLD.value?.sum?.minus(_questionLD.value?.visibleNumber?:
-        throw java.lang.RuntimeException("viewModelGameFragment 43, _questionLD.value?.visibleNumber == null"))
-        Log.d("lesson", "_rightAnswer.value = ${_rightAnswer.value}")
+    private fun recalculatePercentageOfCorrectAnswers(){
+        val rightAnswers = _counterOfRightAnswersLD.value?.toDouble()?:throw Exception("_counterOfRightAnswersLD.value == null")
+        val questions = _counterOfQuestionsLD.value?.toDouble()?:throw Exception("_counterOfQuestionsLD.value == null")
+        _counterOfPercentRightAnswersLD.value = (rightAnswers/questions*100).toString().substringBefore(".").toInt()
+
+        Log.d("lesson", "_counterOfPercentRightAnswersLD.value: ${_counterOfPercentRightAnswersLD.value}")
+    }
+
+    fun answer(answer:String){
+        //Получение праивльного ответа и установка его в ЛайвДату
+        _rightAnswerLD.value = _questionLD.value?.sum?.minus(_questionLD.value?.visibleNumber?:
+        throw java.lang.RuntimeException("viewModelGameFragment, _questionLD.value?.visibleNumber == null"))
+        Log.d("lesson", "_rightAnswer.value = ${_rightAnswerLD.value}")
+
+        //Проверка на правильность ответа от пользователя,
+        //если ответ верен, изменить значение количества правильных ответов
+        if (_rightAnswerLD.value?.equals(answer.toInt()) == true){
+            _counterOfRightAnswersLD.value = _counterOfRightAnswersLD.value?.plus(1)
+            Log.d("lesson", "_counterOfRightAnswers.value = ${_counterOfRightAnswersLD.value} ")
+        }
+
+        //Пересчет процентов правильных ответов, в зависимости от количества вопросов и правильных ответов
+        recalculatePercentageOfCorrectAnswers()
+
+        //Создание нового вопроса, увелечение количества вопросов в ЛД на 1,
+        // и установка нового вопроса в ЛД с актульным вопросомвопросом
+        generateQuestion()
     }
 
     init {
@@ -100,11 +119,6 @@ class ViewModelGameFragment(var level: Level) : ViewModel() {
         launchTimer()
         generateQuestion()
     }
-
-    companion object{
-        const val UNDEFINED_ANSWER = "0"
-    }
-
 
 }
 
