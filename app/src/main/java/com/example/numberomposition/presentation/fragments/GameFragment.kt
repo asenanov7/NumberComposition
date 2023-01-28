@@ -8,18 +8,19 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.numberomposition.R
 import com.example.numberomposition.databinding.FragmentGameBinding
 import com.example.numberomposition.domain.entity.GameResult
 import com.example.numberomposition.domain.entity.GameSettings
-import com.example.numberomposition.domain.entity.Level
 import com.example.numberomposition.presentation.viewmodels.ViewModelGameFragment
 import com.example.numberomposition.presentation.viewmodels.ViewModelGameFragmentFactory
 import kotlin.properties.Delegates
 
 class GameFragment:Fragment() {
 
-    private lateinit var level: Level
+    private val args by navArgs<GameFragmentArgs>()
     private lateinit var viewModelGameFragment: ViewModelGameFragment
     private lateinit var gameSettings:GameSettings
 
@@ -33,10 +34,6 @@ class GameFragment:Fragment() {
     private val binding: FragmentGameBinding
         get() = _binding ?: throw Exception("FragmentGameBinding==null")
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        parseArgs()
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentGameBinding.inflate(inflater, container, false)
@@ -46,7 +43,7 @@ class GameFragment:Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val viewModelFactory = ViewModelGameFragmentFactory(level)
+        val viewModelFactory = ViewModelGameFragmentFactory(args.level)
         viewModelGameFragment = ViewModelProvider(this, viewModelFactory)[ViewModelGameFragment::class.java]
 
         gameSettings = viewModelGameFragment.gameSettingsLD.value ?:throw Exception("gameSettings == null")
@@ -148,29 +145,8 @@ class GameFragment:Fragment() {
         }
     }
 
-    private fun parseArgs(){
-        level = arguments?.getParcelable<Level>(KEY_LEVEL) as Level
-    }
-
     private fun launchResultFragment(gameResult: GameResult){
-        requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainerView, GameResultFragment.getInstance(gameResult))
-            .addToBackStack(GAME_RESULT_FRAGMENT)
-            .commit()
-    }
-
-    companion object{
-        const val GAME_RESULT_FRAGMENT = "GameResultFragment"
-
-        private const val KEY_LEVEL ="level"
-
-        fun getInstance(level:Level): GameFragment{
-            return GameFragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable(KEY_LEVEL, level)
-                }
-            }
-        }
+        findNavController().navigate(GameFragmentDirections.actionGameFragmentToGameResultFragment(gameResult))
     }
 
 }

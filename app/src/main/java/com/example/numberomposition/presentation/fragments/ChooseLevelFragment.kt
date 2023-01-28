@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.numberomposition.R
+import androidx.navigation.fragment.findNavController
 import com.example.numberomposition.databinding.FragmentChooseLevelBinding
 import com.example.numberomposition.domain.entity.Level
 
@@ -37,17 +37,7 @@ class ChooseLevelFragment:Fragment() {
     }
 
     private fun launchGameFragment(level:Level){
-        requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainerView, GameFragment.getInstance(level))
-            .addToBackStack(GAME_FRAGMENT)
-            .commit()
+        findNavController().navigate(ChooseLevelFragmentDirections.actionChooseLevelFragmentToGameFragment(level))
     }
 
-    companion object{
-        const val GAME_FRAGMENT = "GameFragment"
-
-        fun getInstance():ChooseLevelFragment{
-            return ChooseLevelFragment()
-        }
-    }
 }

@@ -4,6 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fragmentContainerView"
     android:layout_width="match_parent"
+    android:name="androidx.navigation.fragment.NavHostFragment"
+    app:navGraph="@navigation/main_nav"
+    app:defaultNavHost="true"
     android:layout_height="match_parent"
     tools:context=".presentation.activity.MainActivity" />
 

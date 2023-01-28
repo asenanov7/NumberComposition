@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.numberomposition.R
 import com.example.numberomposition.databinding.FragmentWelcomeBinding
 
@@ -33,17 +34,7 @@ class WelcomeFragment:Fragment() {
     }
 
     private fun launchChooseLevelFragment(){
-        requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainerView, ChooseLevelFragment.getInstance())
-            .addToBackStack(CHOOSE_LEVEL_FRAGMENT)
-            .commit()
+        findNavController().navigate(R.id.action_welcomeFragment_to_chooseLevelFragment)
     }
 
-    companion object{
-        const val CHOOSE_LEVEL_FRAGMENT = "ChooseLevelFragment"
-
-        fun getInstance():WelcomeFragment{
-            return WelcomeFragment()
-        }
-    }
 }
