@@ -35,13 +35,10 @@ class GameResultFragment:Fragment() {
     }
 
     private fun setDrawable(){
-        val sadDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.icons8_sad_but_relieved_face_96 )
-        val smileDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.icons8_smiling_face_with_smiling_eyes_96)
-
         if (args.gameResult.winner) {
-            binding.imageViewSmile.setImageDrawable(smileDrawable)
+            binding.imageViewSmile.setImageResource(R.drawable.icons8_smiling_face_with_smiling_eyes_96)
         }else {
-            binding.imageViewSmile.setImageDrawable(sadDrawable)
+            binding.imageViewSmile.setImageResource(R.drawable.icons8_sad_but_relieved_face_96)
         }
     }
 
